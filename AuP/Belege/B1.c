@@ -7,6 +7,7 @@ unsigned deldigits(unsigned num, unsigned short div)
 {
     if (num == 0)
     {
+
         return 0;
     }
     if (num % 10 % div == 0)
@@ -18,7 +19,7 @@ unsigned deldigits(unsigned num, unsigned short div)
 
 int main()
 {
-    int num = 82345672;
-    int div = 2;
+    int num = 99,3;
+    int div = 3;
     printf("%d", deldigits(num, div));
 }
