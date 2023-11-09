@@ -30,8 +30,7 @@ int main(void)
     scanf("%d", &a);
     printf("Submitted %d elements\n", a);
 
-    int *A = malloc(a * sizeof(int)); // or calloc(a,sizeof(int));
-
+    int *A = (int *)malloc(a * sizeof(int)); // or calloc(a,sizeof(int));
 
     for (int i = 0; i < a; i++)
     {
@@ -40,7 +39,18 @@ int main(void)
         printf("%d \n", A[i]);
     }
 
-// All this is remained allocated untill free() !!!
+    // Realloc example
+
+    int *B = (int *)realloc(A, (a/2) * sizeof(int));
+
+    printf("Old %u ,New %u\n", A, B);
+
+    for (int i = 0; i < (a/2); i++)
+    {
+        printf("%d \n", B[i]);
+    }
+
+    // All this is remained allocated untill free() !!!
 
     printf("\n");
 }
