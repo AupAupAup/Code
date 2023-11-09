@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
 // -------------------------------------------------------------
 // -------------------------------------------------------------
 
@@ -9,25 +8,39 @@
 
 
 
-
+Dynamic Allocated Array
 
 
 
 */
 
+// -------------------------------------------------------------
+// -------------------------------------------------------------
+// F
 
 // -------------------------------------------------------------
 // -------------------------------------------------------------
-//F
+// M
+
+int main(void)
+{
+
+    int a;
+    printf("input number of elements\n");
+    scanf("%d", &a);
+    printf("Submitted %d elements\n", a);
+
+    int *A = malloc(a * sizeof(int)); // or calloc(a,sizeof(int));
 
 
-// -------------------------------------------------------------
-// -------------------------------------------------------------
-//M
+    for (int i = 0; i < a; i++)
+    {
 
-int main (void) {
-    
-      //previous block V
-    // void* realloc(void* str, datatype size); //can change size of allocated memory // Copies block, makes new one
+        A[i] = i;
+        printf("%d \n", A[i]);
+    }
 
+// All this is remained allocated untill free() !!!
+
+    printf("\n");
 }
