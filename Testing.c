@@ -32,7 +32,10 @@ int stellen(int zahl)
 
 int main()
 {
+double temp = 0;
 
- int a = 123467435;
- printf("%d\n",stellen(a));
+            scanf("%lf", &temp);
+            printf("check\n");
+            printf("check number = %lf\n",temp);
+            
 }
