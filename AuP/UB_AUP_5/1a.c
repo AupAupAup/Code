@@ -19,14 +19,23 @@ und Spalten werden als Parameter übergeben.
 double **func(int colum, int row)
 {
 
-    double **ipp; //pointer auf einen pointer
-    ipp = calloc(colum, sizeof(double *)); // Allocating in heap, addressing location via ipp, Colums are made (these Colums point to another allocated place)
-    for (int i = 0; i < colum; i++) // Each colum point to another row in heap
+    double **ipp;
+    ipp = calloc(colum, sizeof(double *));
+    for (int i = 0; i < colum; i++)
     {
         ipp[i] = calloc(row, sizeof(double));
     }
     return ipp;
 }
+
+void** freethecalloc (double** ipp, int row) {
+        for (int i = 0; i < row; i++)
+        {
+            free(ipp[i]);
+        }
+}
+
+
 
 
 
@@ -42,5 +51,6 @@ int main(void)
 
     scanf("%d", &colum);
     scanf("%d", &row);
-    func(colum, row);
+    double** ipp = func(colum, row);
+
 }

@@ -27,29 +27,40 @@ double **func(int column, int row)
 void eingabe(double **ipp, int column, int row)
 {
 
+    for (unsigned int i = 0; i < column; i++)
+    {
 
-        for (int i = 0; i < column; i++)
+        for (unsigned int j = 0; j < row; j++)
         {
+            double temp = 0;
+            scanf("%lf", &temp);
 
-            for (int j = 0; j < row; j++)
-            {
-                double temp = 0;
-                scanf("%lf", &temp);
-
-                ipp[i][j] = temp;
-                printf("at [%d][%d] =%f\n", i, j, ipp[i][j]);
-            }
-
+            ipp[i][j] = temp;
+            printf("at [%d][%d] =%f\n", i, j, ipp[i][j]);
         }
+    }
 }
 
-void** freethecalloc (double** ipp, int row) {
-        for (int i = 0; i < row; i++)
-        {
-            free(ipp[i]);
-        }
+void **freethecalloc(double **ipp, int row)
+{
+    for (int i = 0; i < row; i++)
+    {
+        free(ipp[i]);
+    }
 }
 
+double ausgabeformat(double **ipp, int column, int row)
+{
+
+    for (unsigned int i = 0; i < column; i++)
+    {
+        for (unsigned int j = 0; j < row; j++)
+        {
+            printf("%.1lf ",ipp[i][j]); 
+        }
+        printf("\n");
+    }
+}
 
 // -------------------------------------------------------------
 // -------------------------------------------------------------
@@ -68,9 +79,11 @@ void main()
     double **ipp = func(column, row);
 
     eingabe(ipp, column, row);
-    freethecalloc(ipp,row);
 
-    printf("%lf\n",ipp[0][0]);
+    ausgabeformat(ipp,column,row);
 
-    
+
+    freethecalloc(ipp, row);
+
+
 }
