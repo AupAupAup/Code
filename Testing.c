@@ -30,12 +30,10 @@ int stellen(int zahl)
     }
 }
 
+
+
 int main()
 {
-double temp = 0;
 
-            scanf("%lf", &temp);
-            printf("check\n");
-            printf("check number = %lf\n",temp);
-            
+
 }
