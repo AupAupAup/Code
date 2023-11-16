@@ -13,11 +13,41 @@ als Ganzzahl zurückgibt. Die Funktion bekommt ein Array von structs
 und die Anzahl der Unternehmen übergeben. Sie können davon ausgehen, dass jedes
 Mutterunternehmen nur ein Tochterunternehmen besitzt.
 
+Fragen:
 
+Wie funktioniert die dereferenzierung bei structs wenn man auf ein element zugreift ?
 
 */
+
 //--------------------------------------------------//
 //--------------------------------------------------//
+struct Unternehmen
+{
+    int ID;
+    double Wert;
+    struct Unternehmen *Tochterunternehmen;
+};
+
+int totuw(struct Unternehmen in[], int n, int * ID)
+{
+    int res = 0;
+    for (int i = 0; i < n - 1; ++i)
+    {
+        double temp = (in[i].Wert + in[i].Tochterunternehmen->Wert);
+        double temp2 = (in[i+1].Wert + in[i+1].Tochterunternehmen->Wert);
+
+        if (temp > temp2)
+        {
+            res = in[i].ID;
+        }
+        else
+        {
+            res = in[i+1].ID;
+        }
+    }
+    ID = &res;
+    return res;
+}
 
 struct person
 {
@@ -27,7 +57,6 @@ struct person
 
 struct person *personenliste(int n)
 {
-    int n;
     printf("How much persons u want\n");
     scanf("%i", &n);
     struct person *p;
@@ -39,33 +68,49 @@ void eingabepl(struct person *ptper, int n)
 {
     for (int i = 0; i < n; ++i)
     {
-        scanf("%u %lf", (ptper + i)->alter, (ptper + i)->groesse); // watum geht *(ptper + 1).alter; nicht ?
+        scanf("%u %lf", &(i + ptper)->alter, &(ptper + i)->groesse); //
     }
 }
 
-double determinlargest(struct person *ptper, int n)
+double determinlargestpl(struct person *ptper, int n)
 {
     double res;
     for (int i = 0; i < n; ++i)
-    {       
-        if ((ptper + n)->groesse > res)
+    {
+        if (ptper[i].groesse > res)
         {
-            res = (ptper + n)->groesse;
+            res = ptper[i].groesse;
         }
     }
     return res;
 }
-
-struct Unternehmen {
-    int ID;
-    double Wert;
-    struct Unternehmen* Tochterunternehmen;
-};
-
 
 //--------------------------------------------------//
 //--------------------------------------------------//
 
 int main()
 {
+
+    struct Unternehmen
+    {
+        int ID;
+        double Wert;
+        struct Unternehmen *Tochterunternehmen;
+    };
+
+    struct Unternehmen as = {
+        2,
+        22,
+    };
+    struct Unternehmen ass = {
+        4,
+        333,
+    };
+    struct Unternehmen asss = {
+        6,
+        66,
+    };
+    struct Unternehmen ab[3] = {{1, 22, &as}, {2, 300, &ass}, {3, 66, &asss}};
+
+    printf("%d\n", totuw(ab, 3));
 }
