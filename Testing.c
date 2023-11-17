@@ -30,10 +30,12 @@ int stellen(int zahl)
     }
 }
 
-
-
-int main()
+int main(int argc, char *argv[])
 {
 
+    printf("%c\n", argv[3][0]);
 
+    int i = 0;
+    for (char c = '\0'; c != argv[3][i]; ++i);
+    printf("%d",i);
 }

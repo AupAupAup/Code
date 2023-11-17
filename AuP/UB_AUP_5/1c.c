@@ -15,7 +15,7 @@ gaben befüllt.
 double **func(int column, int row)
 {
 
-    double **ipp;                           // pointer to pointer
+    double ** ipp;                          // pointer to pointer
     ipp = calloc(column, sizeof(double *)); // Allocating in heap, addressing location via ipp, Colums are made (these Colums point to another allocated place)
     for (int i = 0; i < column; i++)        // Each colum point to another row in heap
     {
