@@ -167,12 +167,15 @@ bool is_valid(char instr)
         return 0;
     }
 }
-
 void eat(duck_t *duck, size_t x_dim, size_t y_dim, field_t game_board[x_dim][y_dim])
 {
-
-    
+    if (game_board[duck->position.x][duck->position.y] == 'F')
+    {
+        duck->hunger -= 1;
+        game_board[duck->position.x][duck->position.y] == 'E';
+    }
 }
+
 
 /*void print_first_ente(size_t x_dim, size_t y_dim, field_t game_board[x_dim][y_dim])
 {
@@ -200,7 +203,8 @@ int main(int argc, char *argv[])
 
     printf("[X] [Y] [HUNGERWERT]");
 
-    scanf("%d %d %d", duck.position.x, duck.position.y, duck.hunger);
+    scanf("%zu %zu %zu", duck.position.x, duck.position.y, duck.hunger); // huh
+
 
     field_t game_board[atoi(argv[1])][atoi(argv[2])];
 
@@ -221,6 +225,8 @@ int main(int argc, char *argv[])
             scanf("%c", &instr);
         }
 
-        move(instr, &duck, atoi(argv[1]), toi(argv[2]));
+        move(instr, &duck, atoi(argv[1]), atoi(argv[2]));
     }
+
+printf("GG\n");
 }
