@@ -1,0 +1,63 @@
+<?xml version='1.0'?>
+<xs:schema xml:xs="http://www.w3.org/">
+
+ <xs:element name="zoo_ct" type="string">
+  <xs:complexType>
+    <xs:element ref="dwelling_ct"/>
+    <xs:element ref="zoo_animal_ct"/>
+    <xs:element ref="zoo_keeper_ct"/>
+  </xs:complexType>
+ </xs:element>
+
+<xs:element name="horse_ct" type="xs:string">
+ <xs:complexType>
+  <xs:element name="white_horse" type="xs:boolean"/>
+ </xs:complexType>
+</xs:element>
+
+<xs:element name="cat_ct" type="xs:string">
+ <xs:complexType>
+  <xs:elememnt name="fur_color" type="xs:string"/>
+ </xs:complexType>
+<\xs:element>
+
+<xs:element name="goose_ct" type="xs:string"> 
+ <xs:complexType>
+  <xs:element name="slaughter_weight" type"xs:Integer"/>
+ </xs:complexType>
+</xs:element> 
+
+<xs:element name="starling_ct" type="xs:string"> 
+  <xs:complexType>
+   <xs:element name="ringed" type="xs:boolean"/>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="mammal_ct" type="zoo_animal_ct">
+ <xs:complexType>
+  <xs:restriction>
+   <xs:enumeration>
+    <xs:element ref="horse_ct"/>
+    <xs:element ref="cat_ct"/>
+   </xs:enumeration>
+  </xs:restriction>
+ </xs:complexType>
+</xs:element>
+
+<xs:element name="bird_ct" type="zoo_animal_ct">
+ <xs:complexType>
+  <xs:restriction>
+   <xs:enumeration>
+    <xs:element ref="goose_ct"/>
+    <xs:element ref="starling_ct"/>
+   </xs:enumeration>
+  </xs:restriction>
+ </xs:complexType>
+</xs:element>
+
+<xs:element name="zoo_animal_ct" type="zoo_ct">
+</xs:element>
+
+<xs:element name="dwelling_ct"
+
+</xs:schema>
