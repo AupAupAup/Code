@@ -11,7 +11,7 @@ b) Schreiben Sie eine Funktion, die die ID des Mutterunternehmens mit dem höchs
 gesamten Unternehmenswert (Wert des Mutterunternehmens + Tochterunternehmens)
 als Ganzzahl zurückgibt. Die Funktion bekommt ein Array von structs
 und die Anzahl der Unternehmen übergeben. Sie können davon ausgehen, dass jedes
-Mutterunternehmen nur ein Tochterunternehmen besitzt.
+Mutterunternehmen enur ein Tochterunternehmen besitzt.
 
 Fragen:
 
