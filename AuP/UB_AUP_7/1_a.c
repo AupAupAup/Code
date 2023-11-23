@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
 
     printf("[X] [Y] [HUNGERWERT]");
 
-    scanf("%zu %zu %zu", duck.position.x, duck.position.y, duck.hunger); // huh
+    scanf("%zu %zu %u", &duck.position.x, &duck.position.y, &duck.hunger); // huh
 
 
     field_t game_board[atoi(argv[1])][atoi(argv[2])];
