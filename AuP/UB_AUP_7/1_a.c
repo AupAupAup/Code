@@ -91,7 +91,7 @@ error_t move(char instr, duck_t *duck, size_t x_dim, size_t y_dim)
     switch (instr)
     {
     case 'R':
-        duck->position.x + 1;`
+        duck->position.x + 1;
         
         if (duck->position.x > x_dim)
         {
