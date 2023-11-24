@@ -28,7 +28,7 @@ typedef enum
 typedef enum
 {
     SUCCESS = 0,
-    WRONG_NUMBER_OF_ARGUMENTS = 2,
+    WRONG_NUMBER_OF_ARGUMENTS,
     WRONG_INPUT_SIZE = 3,
     INVALID_MOVE = 4
 
@@ -48,15 +48,6 @@ typedef struct
 
 bool check_input_size(size_t x_dim, size_t y_dim, char const *input)
 {
-
-    /* for (int n = 0; n < strlen(input); ++n)
-    {
-        if (input[n] != 'E')
-        {
-            return 0;
-        }
-    }*/
-
     unsigned int i = 0;
     for (char c = '\0'; c != input[i]; ++i)
         ;
@@ -100,7 +91,8 @@ error_t move(char instr, duck_t *duck, size_t x_dim, size_t y_dim)
     switch (instr)
     {
     case 'R':
-        duck->position.x + 1;
+        duck->position.x + 1;`
+        
         if (duck->position.x > x_dim)
         {
             duck->position.x - 1;
@@ -150,23 +142,33 @@ error_t move(char instr, duck_t *duck, size_t x_dim, size_t y_dim)
         {
             printf("Success\n");
         }
-    default:
+    default: 
         break;
     }
 }
 
 bool is_valid(char instr)
 {
-    if (instr == 'U' || instr == 'D' || instr == 'L' || instr == 'R')
-    {
-
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
+switch (instr)
+{
+case 'D':
+    printf("Success\n");
+    break;
+case 'U':
+    printf("Success\n");
+    break;
+case 'L':
+    printf("Success\n");
+    break;
+case 'R':
+    printf("Success\n");
+    break;
+default:
+    printf("wrong input\n");
+    break;
 }
+}
+
 void eat(duck_t *duck, size_t x_dim, size_t y_dim, field_t game_board[x_dim][y_dim])
 {
     if (game_board[duck->position.x][duck->position.y] == 'F')
@@ -208,25 +210,11 @@ int main(int argc, char *argv[])
 
     field_t game_board[atoi(argv[1])][atoi(argv[2])];
 
+
     fill_game_board(atoi(argv[1]), atoi(argv[2]), game_board, argv[3]);
 
     print_game_board(atoi(argv[1]), atoi(argv[2]), game_board);
 
-    while (duck.hunger != 0)
-    {
-
-        printf("Was soll die ente Machen? \n\nUP  = U\nDOWN = D\nLEFT = L\nRIGHT = R");
-        char instr;
-        scanf("%c", &instr);
-        while (is_valid == 0)
-        {
-
-            printf("Falsche Eingabe\n\nWas soll die ente Machen? \n\nUP  = U\nDOWN = D\nLEFT = L\nRIGHT = R");
-            scanf("%c", &instr);
-        }
-
-        move(instr, &duck, atoi(argv[1]), atoi(argv[2]));
-    }
-
+    
 printf("GG\n");
 }
