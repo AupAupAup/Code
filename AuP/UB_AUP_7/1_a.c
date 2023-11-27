@@ -53,11 +53,11 @@ bool check_input_size(size_t x_dim, size_t y_dim, char const *input)
         ;
     if ((i / x_dim == x_dim) && (i / y_dim == y_dim))
     {
-        return 1;
+        return true;
     }
     else
     {
-        return 0;
+        return false;
     }
 }
 
@@ -87,97 +87,98 @@ void print_game_board(size_t x_dim, size_t y_dim, field_t game_board[x_dim][y_di
 
 error_t move(char instr, duck_t *duck, size_t x_dim, size_t y_dim)
 {
-
     switch (instr)
     {
-    case 'R':
-        duck->position.x + 1;
-        
+    case ('R'):
+    {
+        ++duck->position.x;
         if (duck->position.x > x_dim)
         {
-            duck->position.x - 1;
+            --duck->position.x;
             printf("invalid move\n");
         }
-        else
-        {
-            printf("Success\n");
-        }
-
-        break;
-
-    case 'L':
-        duck->position.x - 1;
+    }
+    break;
+    case ('L'):
+    {
+        --duck->position.x;
         if (duck->position.x < x_dim)
         {
-            duck->position.x + 1;
+            ++duck->position.x;
             printf("invalid move\n");
         }
-        else
-        {
-            printf("Success\n");
-        }
         break;
-
-    case 'U':
-        duck->position.y - 1;
+    }
+    case ('U'):
+    {
+        --duck->position.y;
         if (duck->position.y < y_dim)
         {
-            duck->position.y + 1;
+            ++duck->position.y;
             printf("invalid move\n");
         }
-        else
-        {
-            printf("Success\n");
-        }
         break;
+    }
 
-    case 'D':
-        duck->position.y + 1;
+    case ('D'):
+    {
+        ++duck->position.y;
         if (duck->position.y > y_dim)
         {
-            duck->position.y - 1;
+            --duck->position.y;
             printf("invalid move\n");
         }
-        else
-        {
-            printf("Success\n");
-        }
-    default: 
+    }
+    default:
+    {
+        printf("Hello :)\n");
         break;
+    }
     }
 }
 
 bool is_valid(char instr)
 {
-switch (instr)
-{
-case 'D':
-    printf("Success\n");
-    break;
-case 'U':
-    printf("Success\n");
-    break;
-case 'L':
-    printf("Success\n");
-    break;
-case 'R':
-    printf("Success\n");
-    break;
-default:
-    printf("wrong input\n");
-    break;
-}
+    switch (instr)
+    {
+
+    case 'D':
+
+    case 'U':
+
+    case 'L':
+
+    case 'R':
+
+        return true;
+    default:
+    {
+        return false;
+    }
+    }
 }
 
 void eat(duck_t *duck, size_t x_dim, size_t y_dim, field_t game_board[x_dim][y_dim])
 {
-    if (game_board[duck->position.x][duck->position.y] == 'F')
+    if (game_board[duck->position.x][duck->position.y] == ('F'))
     {
         duck->hunger -= 1;
-        game_board[duck->position.x][duck->position.y] == 'E';
+        game_board[duck->position.x][duck->position.y] = ('E');
     }
 }
 
+bool still_hungry(duck_t duck)
+{
+
+    if (duck.hunger == 0)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
 
 /*void print_first_ente(size_t x_dim, size_t y_dim, field_t game_board[x_dim][y_dim])
 {
@@ -201,20 +202,37 @@ int main(int argc, char *argv[])
         return 3;
     }
 
+    size_t x_dim = atoi(argv[1]);
+    size_t y_dim = atoi(argv[2]);
+
     duck_t duck;
 
     printf("[X] [Y] [HUNGERWERT]");
 
-    scanf("%zu %zu %u", &duck.position.x, &duck.position.y, &duck.hunger); // huh
+    scanf("%zu %zu %u", &duck.position.x, &duck.position.y, &duck.hunger);
 
+    field_t game_board[x_dim][y_dim];
 
-    field_t game_board[atoi(argv[1])][atoi(argv[2])];
+    fill_game_board(x_dim, y_dim, game_board, argv[3]);
 
+    print_game_board(x_dim, y_dim, game_board);
 
-    fill_game_board(atoi(argv[1]), atoi(argv[2]), game_board, argv[3]);
+    for (int i = 1; still_hungry(duck) == true; ++i)
+    {
+        printf("X:%lu Y:%lu\n", duck.position.x, duck.position.y);
+        eat(&duck, x_dim, y_dim, game_board);
+        char instr;
+        printf("--- round %d ---\n\n", i);
+        scanf("%c\n", &instr);
+        while ((is_valid(instr) == false))
+        {
+            scanf("%c\n", &instr);
+        }
 
-    print_game_board(atoi(argv[1]), atoi(argv[2]), game_board);
+        move(instr, &duck, x_dim, y_dim);
+        eat(&duck, x_dim, y_dim, game_board);
+        print_game_board(x_dim, y_dim, game_board);
+    }
 
-    
-printf("GG\n");
+    printf("GG\n");
 }
