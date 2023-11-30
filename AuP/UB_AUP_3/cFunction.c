@@ -72,7 +72,7 @@ int power(int p, int e)
 
     else
     {
-        return power(p*10,e-1);
+        return power(p * 10, e - 1);
     }
 }
 
@@ -81,15 +81,15 @@ int stellenausgabe(int s, int k) // s
 
     if (s <= 9)
     {
-        printf("%d\n", s*power(1,k));
+        printf("%d\n", s * power(1, k));
         return s;
     }
     else
     {
 
-        printf("%d\n", s*power(1,k));
-        k+=1;
-        return stellenausgabe(s/10,k)*power(1,k);
+        printf("%d\n", s * power(1, k));
+        k += 1;
+        return stellenausgabe(s / 10, k) * power(1, k);
     }
 }
 
@@ -182,10 +182,10 @@ int main()
    scanf("%d", &q);
    printf("Queersumme von %d ist %d\n",q ,queersumme(q));
 */
-    int k=0;
+    int k = 0;
     int z;
     scanf("%d", &z);
-    stellenausgabe(z,k);
+    stellenausgabe(z, k);
 
     return 0;
 }

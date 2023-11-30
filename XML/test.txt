@@ -1,0 +1,39 @@
+import xml.dom.minidom
+document = xml.dom.minidom.parse('deliveries_unsorted.xml')
+article_list = document.getElementsByTagName("article")
+
+i=0
+for article in article_list:
+    supplier = document.getElementsByTagName("supplier")[i].childNodes[0].nodeValue
+    name = document.getElementsByTagName("name")[i].childNodes[0].nodeValue
+    print(f"{supplier} supplies: {name}")
+    i += 1
+
+L1: Import xml.dom.mindom library
+L2: Include "deliveries_unsorted.xml"
+L3: assign variable 'article_list' the articles
+
+L5: Index iterator variable
+L6: for each article in article_list do L6-L9
+L7: assign variable 'supplier' the value of element at index i
+L8: assign variable 'name' the value of element at index i
+L9: print {supplier} supplies: {name}
+
+
+for article in article_list:
+    supplier = document.getElementsByTagName("supplier")[i].childNodes[0].nodeValue
+    for article in article_list:
+        if(document.getElementsByTagName("{supplier}").length > 1):
+            while(k != document.getElementsByTagName("article").length):
+                if(document.getElementsByTagName("supplier")[k].childNodes[0].nodeValue == "{supplier}"):
+                    name = document.getElementsByTagName("name")[k].nextSibling("{supplier}").nodeValue
+                    names = []
+                    names[k] = name
+                    if(k ==  document.getElementsByTagName("article").length):
+                        print(f"{supplier} supplies: {names}")
+
+                k+=1
+        else:    
+            name = document.getElementsByTagName("name")[i].childNodes[0].nodeValue
+            print(f"{supplier} supplies: {name}")
+    i += 1
