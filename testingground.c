@@ -34,15 +34,4 @@ int main(void)
 
     printf("%d\n", (sizeof(Anfang)));
 
-    int a = 1;
-    int b = 1;
-    int c = 1;
-    int d = 1;
-    int x = 2;
-    int y = 2;
-    int z = 2;
-    if ((a == b == c == d) && (x == y == z))
-    {
-        printf("yes\n");
-    }
 }

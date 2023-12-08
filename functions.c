@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 int howmanytimesicandivideuntil0questionmark(int integer)
 {
     int k = 0;
@@ -82,4 +84,32 @@ int stellen2(int integer)
     {
         return stellen2(integer / 10) + 1;
     }
+}
+
+unsigned long long pascal_nk(int n, int k){
+    int result = 1;
+    int naenner = 1;
+    int zaehler = 1;
+    if (k > (n-k)){
+        for (int i = 1; i < (n-k)+1; i++){
+            zaehler = (n - (i-1));
+            naenner =(i);
+            result = result * zaehler / naenner;
+        }
+    }
+    else{
+        for (int i = 1; i < k+1; i++){
+            zaehler =(n - (i-1));
+            naenner =(i);
+            result = result * zaehler / naenner;
+        }
+    }
+    return result;
+}
+
+int main(){
+
+unsigned long long a = pascal_nk(465,54);
+printf("%lld", a);
+
 }
