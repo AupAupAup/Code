@@ -126,7 +126,7 @@ int notyou(int integer, int n)
 }
 */
 
-int einsa(int integer, int n)
+int  retBit(int integer, int n)
 {
     int eins = 1 << n;
     int check = (integer & eins);
@@ -282,13 +282,13 @@ for (int i = 0;; i++)
 int main(void)
 {
 
-    // allebits(123);
+    allebits(123);
     // printf("\n");
 
     // einsa(123, 2);
     // einsb(100, 3);
     // einsc(100, 2);
 
-    outputzweie();
+    //outputzweie();
     // printf("%d\n",a);
 }
