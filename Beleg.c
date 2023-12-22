@@ -2,19 +2,12 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-
-
-
 struct regs
 {
     uint8_t pc; // Befehlszeiger
     uint8_t fa; // Flags + Akkumulator
     uint8_t ix; // Indexregister
 };
-
-// -------------------------------------------------------------
-// -------------------------------------------------------------
-
 int power(int basis, int exponent)
 {
     switch (exponent)
@@ -27,13 +20,6 @@ int power(int basis, int exponent)
         return power(basis, exponent - 1) * basis;
     }
 }
-
-// -------------------------------------------------------------
-// -------------------------------------------------------------
-
-// -------------------------------------------------------------
-//
-// -------------------------------------------------------------
 int retBit(uint8_t integer, int nthBit)
 {
     int eins = 1 << nthBit;
@@ -41,7 +27,6 @@ int retBit(uint8_t integer, int nthBit)
     int res = check >> nthBit;
     return res;
 }
-
 int zweierkomplement(int value)
 {
     for (int i = 0; i <= 3; ++i)
@@ -61,25 +46,20 @@ int zweierkomplement(int value)
     }
     return value;
 };
-
 void set0Bit(uint8_t *value, int nthBit)
 {
     int eins = 1 << nthBit;
     *value = ((*value) ^ eins);
 };
-
 void set1Bit(uint8_t *value, int nthBit)
 {
     int eins = 1 << nthBit;
     *value = ((*value) | eins);
 };
-
-// adrCase(0 = a, 1 = il, 2 = ih, 3 = ix/ data), value (um welchen wert auf adrCase uebertragen),
 void bitOverride(int adrCase, int value, struct regs *reg, uint8_t *data)
 {
-    switch (adrCase)
+    if(adrCase == 0)
     {
-    case 0: // a
         for (int i = 0, c = 0; i <= 3; ++i, ++c)
         {
             if (retBit(value, c) == 0)
@@ -94,8 +74,8 @@ void bitOverride(int adrCase, int value, struct regs *reg, uint8_t *data)
                 set1Bit(&reg->fa, i);
             }
         }
-        break;
-    case 1: // il
+    }
+    if(adrCase == 1){ // il
         for (int i = 0, c = 0; i <= 3; ++i, ++c)
         {
             if (retBit(value, c) == 0)
@@ -110,8 +90,8 @@ void bitOverride(int adrCase, int value, struct regs *reg, uint8_t *data)
                 set1Bit(&reg->ix, i);
             }
         }
-        break;
-    case 2: // ih
+    }
+    if(adrCase == 2){
         for (int i = 4, c = 0; i <= 7; ++i, ++c)
         {
             if (retBit(value, c) == 0)
@@ -126,9 +106,8 @@ void bitOverride(int adrCase, int value, struct regs *reg, uint8_t *data)
                 set1Bit(&reg->ix, i);
             }
         }
-        break;
-    case 3: // ix / data
-
+    }
+    if(adrCase == 3){ // ix / data
         int i = 0;
         if ((reg->ix) % 2 == 1)
         {
@@ -151,13 +130,8 @@ void bitOverride(int adrCase, int value, struct regs *reg, uint8_t *data)
                 set1Bit(&(data[index]), i);
             }
         }
-        break;
-    default:
-        break;
     }
 };
-// return for 8 bit
-
 int *fetch4BitAkku(struct regs *reg)
 {
     int *temp = (int *)malloc(4 * sizeof(int));
@@ -199,26 +173,6 @@ int *fetch4BitIh(struct regs *reg)
     }
     return temp;
 };
-int *fetch8BitIx(struct regs *reg)
-{
-    int *temp = (int *)malloc(8 * sizeof(int));
-
-    for (int i = 0; i <= 7; ++i)
-    {
-        temp[i] = retBit(reg->ix, i);
-    }
-    return temp;
-};
-int *fetch8BitData(struct regs *reg, uint8_t *data)
-{
-    int *temp = (int *)malloc(8 * sizeof(int));
-
-    for (int i = 0; i <= 7; ++i)
-    {
-        temp[i] = retBit(data[(reg->ix / 2)], i);
-    }
-    return temp;
-};
 int *fetch4BitData(struct regs *reg, uint8_t *data)
 {
     int *temp = (int *)malloc(4 * sizeof(int));
@@ -242,26 +196,6 @@ int *fetch4BitData(struct regs *reg, uint8_t *data)
         return temp;
     }
 }
-int *fetch4BitPc(struct regs *reg)
-{
-    int *temp = (int *)malloc(4 * sizeof(int));
-
-    for (int i = 0; i <= 3; ++i)
-    {
-        temp[i] = retBit(reg->pc, i);
-    }
-    return temp;
-}
-int *fetch8BitPc(struct regs *reg)
-{
-    int *temp = (int *)malloc(8 * sizeof(int));
-
-    for (int i = 0; i <= 7; ++i)
-    {
-        temp[i] = retBit(reg->pc, i);
-    }
-    return temp;
-}
 int *fetch4BitCMD(uint8_t *cmd, int *indexCMD)
 {
     int *temp = (int *)malloc(4 * sizeof(int));
@@ -282,38 +216,6 @@ int *fetch8BitCMD(uint8_t *cmd, int *indexCMD)
     }
     return temp;
 }
-
-// -------------------------------------------------------------
-//              PRINT DATA FUNCTION
-// -------------------------------------------------------------
-
-void printData(uint8_t *data)
-{
-
-    for (int i = 0; i <= 127; ++i)
-    {
-        printf("INDEX %d \t", i);
-        for (int v = 7; v >= 4; --v)
-        {
-            printf("%d", retBit(data[i], v));
-        }
-        printf("\t|\t");
-
-        for (int j = 3; j >= 0; --j)
-        {
-            printf("%d", retBit(data[i], j));
-        }
-        printf("\t\n");
-    }
-};
-
-/////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
-
-// -------------------------------------------------------------
-//               FIND AND RETURN CHANGES
-// -------------------------------------------------------------
-// ret for 4 bit
 int retCellValue(int *bitVector)
 {
     int res = 0;
@@ -326,7 +228,6 @@ int retCellValue(int *bitVector)
     };
     return res;
 };
-
 int ret8bCellValue(int *bitVector)
 {
     int res = 0;
@@ -339,14 +240,6 @@ int ret8bCellValue(int *bitVector)
     };
     return res;
 };
-
-//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!
-// *retAllBits => return all bits in int array                                                                                                //
-//                                                                                                                                            //
-// reminder lsb upto msb in bitvector => (dec) 2 = (b) 01000000 (lsb faengt bei index 0 an und msb bei index 7)                               //
-// for readability reversed output needed                                                                                                     //
-//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!//!!
-
 int *retAllBitsMALLOC(uint8_t *data, int currentIndex)
 {
     int *bitVector = (int *)malloc(8 * sizeof(int));
@@ -356,10 +249,6 @@ int *retAllBitsMALLOC(uint8_t *data, int currentIndex)
     }
     return bitVector;
 }
-
-// reminder (at index 0 is lsb)
-// LSB half of 8bitVector part
-
 int *retLsbBitsMALLOC(int *modifiedBitVector) //
 {
 
@@ -371,10 +260,6 @@ int *retLsbBitsMALLOC(int *modifiedBitVector) //
     }
     return bitVector;
 };
-
-// reminder (at index 4 is MSB)
-// MSB half of 8bitVector part
-
 int *retMsbBitsMALLOC(int *modifiedBitVector) //
 {
 
@@ -388,9 +273,6 @@ int *retMsbBitsMALLOC(int *modifiedBitVector) //
     }
     return bitVector;
 };
-
-// returns a 1 if lsb part cell is modified
-
 unsigned int funcToCheckLsbPart(int *original, int *modified)
 {
     unsigned int check = 0;
@@ -408,9 +290,6 @@ unsigned int funcToCheckLsbPart(int *original, int *modified)
     }
     return check;
 };
-
-// returns a 1 if msb part cell is modified
-
 unsigned int funcToCheckMsbPart(int *original, int *modified)
 {
     unsigned int check = 0;
@@ -428,7 +307,6 @@ unsigned int funcToCheckMsbPart(int *original, int *modified)
     }
     return check;
 };
-
 char singleIntToChar(int integer)
 {
 
@@ -471,7 +349,6 @@ char singleIntToChar(int integer)
         break;
     }
 }
-
 void assembleStringPutIntoHeap(int indexInteger, int *partBitVector, char *callocStringArray)
 {
     int strlength = strlen(callocStringArray);
@@ -490,9 +367,6 @@ void assembleStringPutIntoHeap(int indexInteger, int *partBitVector, char *callo
     callocStringArray[3 + strlength] = singleIntToChar(tempCellValue);
     callocStringArray[4 + strlength] = '\n';
 };
-
-// Returns a pointer to an array showing changes
-
 char *retChanges(uint8_t *dataOriginal, uint8_t *dataModified)
 {
     int saveCalledChanges = 0;
@@ -502,11 +376,8 @@ char *retChanges(uint8_t *dataOriginal, uint8_t *dataModified)
     {
         int *originalBitVector = retAllBitsMALLOC(dataOriginal, i);
         int *modifiedBitVector = retAllBitsMALLOC(dataModified, i);
-
         int is_lsb = funcToCheckLsbPart(originalBitVector, modifiedBitVector); // is one when lsb part is changed
         int is_msb = funcToCheckMsbPart(originalBitVector, modifiedBitVector); // is two when msb part is changed
-        //  printf("INDEX [%d] \t MSB[%d] LSB[%d]\n", i, is_msb, is_lsb);
-
         if (is_lsb == 1)
         {
             int cellIndexLsb = (2 * i);
@@ -542,26 +413,15 @@ char *retChanges(uint8_t *dataOriginal, uint8_t *dataModified)
         return toRetArray;
     }
 };
-
-/////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
-// -------------------------------------------------------------
-//       Read Function & Befehlszeiger & Regs PC Update
-// ------------------------------------------------------------- // Remove Printf's
 int readCommand(struct regs *reg, int *indexCMD, uint8_t *cmd)
 {
-
     int commandNr = -1;
     int *tempBitVector = fetch8BitCMD(cmd, indexCMD);
-    int checkvalue = ret8bCellValue(tempBitVector);
-
-    printf("teh incomming value is %d\n", checkvalue);
-    printf("%d in binary is ", checkvalue);
-    for (int i = 7; i >= 0; --i)
+    if (ret8bCellValue(tempBitVector) > 255)
     {
-        printf("%d", tempBitVector[i]); 
+        
+        return -400;
     }
-    printf("\n");
 
     if (tempBitVector[7] == 0 && tempBitVector[6] == 0)
     {
@@ -613,74 +473,37 @@ int readCommand(struct regs *reg, int *indexCMD, uint8_t *cmd)
     } // halt
     free(tempBitVector);
     return commandNr;
-
-    // Soll Befehl als Array Zurueckgeben
-    // From Left to Right (in Regs pc) Check if LSB has this order
-    // First Check if Correct size of Bits
-    // Case 00 -> ldi [cdNr= 0]
-    // Case 11 -> bcc [cdNr= 1]
-    // Case 0100 -> mv [cdNr= 2]
-    // Case 0101 -> jr [cdNr = 3]
-    // Case 101000 -> add [cdNr = 5]
-    // Case 101001 -> adc [cdNr = 6]
-    // Case 101010 -> and [cdNr = 7]
-    // Case 101011 -> or [cdNr = 8]
-    // Case 101100 -> xor [cdNr = 9]
-    // Case 101101 -> neg [cdNr = 10]
-    // Case 101110 -> cpl [cdNr = 11]
-    // Case 01111111 -> halt [cdNr = 4]
-    // Default Error -1
 };
-
-/////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
-// -------------------------------------------------------------
-//              COMMANDS
-// -------------------------------------------------------------
-
-// 00 for a, 01 for il, 10 for ih, 11 for ix
-
 void ldi(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD)
 {
     int *_4BitCMD = fetch4BitCMD(cmd, indexCMD);
-
     int *_8BitCMD = fetch8BitCMD(cmd, indexCMD);
-
     int Value_4BitCMD = retCellValue(_4BitCMD);
-    printf("about to load %d", Value_4BitCMD);
 
     if (_8BitCMD[5] == 0 && _8BitCMD[4] == 0)
     {
-        printf(" into a\n");
         bitOverride(0, Value_4BitCMD, reg, data);
     }
     if (_8BitCMD[5] == 0 && _8BitCMD[4] == 1)
     {
-        printf(" into il\n");
         bitOverride(1, Value_4BitCMD, reg, data);
     }
     if (_8BitCMD[5] == 1 && _8BitCMD[4] == 0)
     {
-        printf(" into ih\n");
         bitOverride(2, Value_4BitCMD, reg, data);
     }
     if (_8BitCMD[5] == 1 && _8BitCMD[4] == 1)
     {
-        printf(" into data\n");
         bitOverride(3, Value_4BitCMD, reg, data);
     }
     free(_4BitCMD);
     free(_8BitCMD);
 };
-
-void mv(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD) // Copy from adr 2 to adr 1
+void mv(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD)
 {
     int *adresses = fetch8BitCMD(cmd, indexCMD);
-
-    // von a
     if (adresses[1] == 0 && adresses[0] == 0)
     {
-        //  nach li
         if (adresses[3] == 0 && adresses[2] == 1)
         {
             int *temp = fetch4BitAkku(reg);
@@ -691,8 +514,7 @@ void mv(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD) // Copy fr
         if (adresses[3] == 1 && adresses[2] == 0)
         {
             int *temp = fetch4BitAkku(reg);
-            int value = retCellValue(temp); // value von a
-            printf("%d\n", value);
+            int value = retCellValue(temp);   // value von a
             bitOverride(2, value, reg, data); // nach ih
             free(temp);
         }
@@ -704,11 +526,8 @@ void mv(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD) // Copy fr
             free(temp);
         }
     };
-
-    // von il
     if (adresses[1] == 0 && adresses[0] == 1)
     {
-        //  nach a
         if (adresses[3] == 0 && adresses[2] == 0)
         {
             int *temp = fetch4BitIl(reg);
@@ -716,7 +535,6 @@ void mv(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD) // Copy fr
             bitOverride(0, value, reg, data); // nach a
             free(temp);
         };
-        // nach ih
         if (adresses[3] == 1 && adresses[2] == 0)
         {
             int *temp = fetch4BitIl(reg);
@@ -724,20 +542,16 @@ void mv(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD) // Copy fr
             bitOverride(2, value, reg, data); // nach ih
             free(temp);
         }
-        // nach ix / temp
         if (adresses[3] == 1 && adresses[2] == 1)
         {
             int *temp = fetch4BitIl(reg);
-            int value = retCellValue(temp); // value von li;
-            printf("%d\n", value);
+            int value = retCellValue(temp);   // value von li;
             bitOverride(3, value, reg, data); // nach data[ix/2]
             free(temp);
         }
     }
-    // von ih
     if (adresses[1] == 1 && adresses[0] == 0)
     {
-        //  nach a
         if (adresses[3] == 0 && adresses[2] == 0)
         {
             int *temp = fetch4BitIh(reg);
@@ -745,7 +559,6 @@ void mv(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD) // Copy fr
             bitOverride(0, value, reg, data); // nach a
             free(temp);
         };
-        // nach il
         if (adresses[3] == 0 && adresses[2] == 1)
         {
             int *temp = fetch4BitIh(reg);
@@ -753,20 +566,16 @@ void mv(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD) // Copy fr
             bitOverride(1, value, reg, data); // nach ih
             free(temp);
         }
-        // nach ix / temp
         if (adresses[3] == 1 && adresses[2] == 1)
         {
             int *temp = fetch4BitIh(reg);
-            int value = retCellValue(temp); // value von li;
-            printf("%d\n", value);
+            int value = retCellValue(temp);   // value von li;
             bitOverride(3, value, reg, data); // nach data[ix/2]
             free(temp);
         }
-        // von data
     };
     if (adresses[1] == 1 && adresses[1] == 1)
     {
-        //  nach a
         if (adresses[3] == 0 && adresses[2] == 0)
         {
             int *temp = fetch4BitData(reg, data);
@@ -774,7 +583,6 @@ void mv(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD) // Copy fr
             bitOverride(0, value, reg, data); // nach a
             free(temp);
         };
-        // nach il
         if (adresses[3] == 0 && adresses[2] == 1)
         {
             int *temp = fetch4BitData(reg, data);
@@ -782,19 +590,16 @@ void mv(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD) // Copy fr
             bitOverride(1, value, reg, data); // nach ih
             free(temp);
         }
-        // nach  ih
         if (adresses[3] == 1 && adresses[2] == 0)
         {
             int *temp = fetch4BitData(reg, data);
-            int value = retCellValue(temp); // value von li;
-            printf("%d\n", value);
+            int value = retCellValue(temp);   // value von li;
             bitOverride(2, value, reg, data); // nach data[ix/2]
             free(temp);
         }
     };
     free(adresses);
 };
-
 void jr(struct regs *reg, uint8_t *cmd, int *indexCMD)
 {
     int *fetchedPc = fetch4BitCMD(cmd, indexCMD);
@@ -806,9 +611,6 @@ void jr(struct regs *reg, uint8_t *cmd, int *indexCMD)
         *indexCMD += 1;
     }
     free(fetchedPc);
-};
-void halt(struct regs *reg, uint8_t *data){
-
 };
 void bcc(struct regs *reg, uint8_t *cmd, int *indexCMD)
 {
@@ -829,7 +631,6 @@ void bcc(struct regs *reg, uint8_t *cmd, int *indexCMD)
     free(fetchedFa);
     free(fetchedPc);
 };
-
 void add(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD)
 {
     int *adresses = fetch4BitCMD(cmd, indexCMD);
@@ -1420,7 +1221,6 @@ void neg(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD)
     }
     free(adresses);
 };
-
 void cpl(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD)
 {
     int *adresses = fetch4BitCMD(cmd, indexCMD);
@@ -1490,88 +1290,52 @@ void cpl(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD)
     }
     free(adresses);
 };
-
 void commandCenter(struct regs *reg, uint8_t *data, uint8_t *cmd, int *indexCMD, int commandNr /* ,, Possibly Change of State-> see halt*/)
 {
-    // Soll Befehl als Array Zurueckgeben
-    // From Left to Right (in Regs pc) Check if LSB has this order
-    // First Check if Correct size of Bits
-    // Case 00 -> ldi [cdNr= 0]
-    // Case 11 -> bcc [cdNr= 1]
-    // Case 0100 -> mv [cdNr= 2]
-    // Case 0101 -> jr [cdNr = 3]
-    // Case 101000 -> add [cdNr = 5]
-    // Case 101001 -> adc [cdNr = 6]
-    // Case 101010 -> and [cdNr = 7]
-    // Case 101011 -> or [cdNr = 8]
-    // Case 101100 -> xor [cdNr = 9]
-    // Case 101101 -> neg [cdNr = 10]
-    // Case 101110 -> cpl [cdNr = 11]
-    // Case 01111111 -> halt [cdNr = 4]
-    // Default Errororo ->
-
     switch (commandNr)
     {
     case 0: // 00
-        printf("Command ldi Chosen\n");
         ldi(reg, data, cmd, indexCMD);
         break;
     case 1: // 11
-        printf("Command bcc Chosen\n");
         bcc(reg, cmd, indexCMD);
         break;
     case 2: // 01/00
-        printf("Command mv Chosen\n");
         mv(reg, data, cmd, indexCMD);
         break;
     case 3: // 01/01
-        printf("Command jr Chosen\n");
         jr(reg, cmd, indexCMD);
         break;
     case 4: // 0111/1111
-        // Still Needs Somtehing # ->note
-        printf("Command halt Chosen\n");
         break;
     case 5: // 1010/00
-        printf("Command add Chosen\n");
         add(reg, data, cmd, indexCMD);
         break;
     case 6: // 1010/01
-        printf("Command adc Chosen\n");
         adc(reg, data, cmd, indexCMD);
         break;
     case 7: // 1010/10
-        printf("Command and Chosen\n");
         andd(reg, data, cmd, indexCMD);
         break;
     case 8: // 1010/11
-        printf("Command or Chosen\n");
         orr(reg, data, cmd, indexCMD);
         break;
     case 9: // 1011/00
-        printf("Command xor Chosen\n");
         xorr(reg, data, cmd, indexCMD);
         break;
     case 10: // 1011/01
-        printf("Command neg Chosen\n");
         neg(reg, data, cmd, indexCMD);
         break;
     case 11: // 1011/10
-        printf("Command cpls Chosen\n");
         cpl(reg, data, cmd, indexCMD);
         break;
     default:
-        printf("Command NONE Chosen\n");
         break;
     }
 }
-
-/////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
-
 char *simcpu(struct regs *registers, uint8_t data[128], uint8_t cmd[256])
 {
-    int indexCMD = 0;
+    int readIndex = 0;
     int cmdsCounter = 0;
     uint8_t dataCopyBefore[128];
     for (int i = 0; i <= 127; ++i)
@@ -1580,26 +1344,22 @@ char *simcpu(struct regs *registers, uint8_t data[128], uint8_t cmd[256])
     }
     while (cmdsCounter < 100)
     {
-        printf("Command %d\n", indexCMD);
-        int cmdNr = readCommand(registers, &indexCMD, cmd);
-        printf("Identified cmdNr = %d\n", cmdNr);
+        int cmdNr = readCommand(registers, &readIndex, cmd);
+        readIndex += 1;
+        int commandIndex = readIndex - 1;
         if (cmdNr == -400 || cmdNr == 4)
         {
-            char * res = retChanges(dataCopyBefore, data);
+            char *res = retChanges(dataCopyBefore, data);
             return res;
         }
-        commandCenter(registers, data, cmd, &indexCMD, cmdNr);
-        indexCMD += 1;
+        commandCenter(registers, data, cmd, &commandIndex, cmdNr);
         ++cmdsCounter;
-        printf("============End Cycle=========== \n");
     }
-    char * res = retChanges(dataCopyBefore, data);
+    char *res = retChanges(dataCopyBefore, data);
     return res;
 };
-/////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
 
-// Basic Functions
+
 
 void initializeWithZero(uint8_t *data)
 {
@@ -1633,70 +1393,4 @@ void main(void)
     printf("-----------------STATS BELOW-------------------\n");
     // printf("%s\n", res);
 
-    printf("FA = %d\n", a.fa);
-    int *ih = fetch4BitIh(&a);
-    int val_ih = retCellValue(ih);
-    int *il = fetch4BitIl(&a);
-    int val_il = retCellValue(il);
-    int * a_4Bit = fetch4BitAkku(&a);
-    int a_4BitVal = retCellValue(a_4Bit);
-    printf("A = %d\n", a_4BitVal); 
-    printf("IL = %d\n", val_il);
-    printf("IH = %d\n", val_ih);
-    printf("IX = %d\n", a.ix);
-    int *_8Bits_data = fetch8BitData(&a, data);
-    int val_data = ret8bCellValue(_8Bits_data);
-    printf("data[%d] = %d\n", a.ix / 2, val_data);
-    printf("data[%d] = %d\n", a.ix / 2, data[a.ix / 2]);
-
-    free(ih);
-    free(il);
-    free(a_4Bit);
-    free(_8Bits_data);
-    free(res);
-
-
-    /* // ADD [1,0]-> What + a
-     add(b, data);
-     printf("%d\n", b->fa);
- */
-    /* // MV adr2 -> adr1 [xxxx[adr1][adr2]]
-    printf("data[%d] before = %d\n", b->ix / 2, data[b->ix / 2]);
-    mv(b, data);
-    printf("\nfa = %d\n", b->fa);
-    printf("ix = %d\n", b->ix);
-    printf("data[%d] after = %d\n", b->ix / 2, data[b->ix / 2]);
-    */
-    /* LDI // 00 for a, 01 for il, 10 for ih, 11 for ix
-     data[0] = 0b11111111;
-     printf("%x\n\n", data[0]); // ff
-     ldi(b, data);
-     printf("%x\n\n", data[0]); // eigentlich f0
-     */
-    /*for(int i = 0; i<= 127; ++i){
-    data2[i] = 42;
-    }*/
-    /*
-        char *temp = retChanges(data, data2);
-        printf("%s\n", temp);
-        free(temp);
-        printf("--------------------------------------------------\n");
-        */
 }
-
-/* TODO
-
-
-Implement Change Functions
-    - [READER] Check bitmask only meaning 0b101010-- = 0b101010-- -> ist dieser befehl
-    {   is it 00------ -> it is command ldi with number 0
-        is it 11------ -> it is command bcc dist with number 1
-        is it ...
-        ./ SwitchCase return into execute
-    }
-    - [CHECK]  DONE
-
-    !!!
-    - Check @ add befehlfunction ob flagsetzung korrekt ist
-
-*/
